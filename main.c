@@ -3,6 +3,7 @@
 #include <string.h>
 #include <locale.h>
 #include <ctype.h>
+#include <unistd.h>
 
 void limparBuffer() {
     int c;
@@ -16,6 +17,11 @@ int haAvioesDisponiveis(int assentos[], int tamanho) {
         }
     }
     return 0;
+}
+
+void esperarEnter() {
+    printf("\nPressione Enter para continuar...");
+    while (getchar() != '\n');
 }
 
 int main (){
@@ -57,6 +63,13 @@ int main (){
                         }
                         limparBuffer();
                     }    
+                    printf("Processando...\n");
+                    sleep(2);
+                    printf("\033[1A\033[2K");
+                    printf("\nConcluído!\n");
+                    esperarEnter();
+                    system("clear");
+
                 }else{
                     printf("\nAviões disponíveis: \n");
                     for(i = 0; i < 4; i++){
