@@ -24,7 +24,7 @@ int main (){
     int cont1 = 0, cont2 = 0, cont3 = 0, cont4 = 0, totalNomes = 0, achou = 0, mostrouCabecalho = 0;
     int pass1[100], pass2[100], pass3[100], pass4[100], passagensPorPessoa[160];
     int avioes[4] = {0, 0, 0, 0}, assentos[4] = {0, 0, 0, 0};
-    char nome[50], passageiros1[100][50], passageiros2[1000][50], passageiros3[100][50], passageiros4[100][50];
+    char nome[50], passageiros1[100][50], passageiros2[100][50], passageiros3[100][50], passageiros4[100][50];
     char nomeParaConsulta[50], consultaPassageiro[50], todosOsNomes[160][50];
     
     printf("\nBem vindo a Agência de Aviação Sweet Flight!");
@@ -238,14 +238,11 @@ int main (){
                 if (todosOsNomes[0][0] == '\0') {
                     printf("\nNenhum nome foi cadastrado ainda.\n");
                 }else{
-                    printf("\nDigite o nome do passageiro que deseja consultar: ");
-                    limparBuffer();
-                    scanf(" %49[^\n]", consultaPassageiro);
                     achou = 0;
                     int valido1 = 0;
                     while (!valido1) {
-                        printf("\nDigite o seu nome (Apenas letras): ");
-                        scanf(" %49[^\n]", nome);
+                        printf("\nDigite o nome do passageiro que deseja consultar: ");
+                        scanf(" %49[^\n]", consultaPassageiro);
                         valido1 = 1;
                         for (int i = 0; i < strlen(nome); i++) {
                             if (!isalpha(nome[i]) && nome[i] != ' ') {
@@ -257,21 +254,21 @@ int main (){
                     }
                 
                     for (j = 0; j < totalNomes; j++) {
-                        if (strcmp(consultaPassageiro, todosOsNomes[j]) == 0) {
+                        if (strcasecmp(consultaPassageiro, todosOsNomes[j]) == 0) {
                             achou = 1;
                             printf("\nPassagens de %s:\n", consultaPassageiro);
 
                             for (i = 0; i < totalNomes; i++) {
-                                if (strcmp(consultaPassageiro, passageiros1[i]) == 0)
+                                if (strcasecmp(consultaPassageiro, passageiros1[i]) == 0)
                                     printf("- Avião 1 (#%04d): %d passagens\n", avioes[0], pass1[i]);
 
-                                if (strcmp(consultaPassageiro, passageiros2[i]) == 0)
+                                if (strcasecmp(consultaPassageiro, passageiros2[i]) == 0)
                                     printf("- Avião 2 (#%04d): %d passagens\n", avioes[1], pass2[i]);
 
-                                if (strcmp(consultaPassageiro, passageiros3[i]) == 0)
+                                if (strcasecmp(consultaPassageiro, passageiros3[i]) == 0)
                                     printf("- Avião 3 (#%04d): %d passagens\n", avioes[2], pass3[i]);
 
-                                if (strcmp(consultaPassageiro, passageiros4[i]) == 0)
+                                if (strcasecmp(consultaPassageiro, passageiros4[i]) == 0)
                                     printf("- Avião 4 (#%04d): %d passagens\n", avioes[3], pass4[i]);
                             }
                             break;
