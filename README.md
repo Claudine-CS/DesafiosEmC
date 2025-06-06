@@ -22,4 +22,4 @@ Uma versão simples do clássico jogo da forca feita em C. O usuário tenta adiv
 
 🚀 Objetivo
 
-Este repositório é um espaço de prática contínua em C, onde novos desafios serão adicionados com o tempo. Ideal para estudantes e iniciantes que querem aprender com exemplos práticos.
+Este repositório é um espaço de prática contínua em C, onde novos desafios serão adicionados com o tempo.
