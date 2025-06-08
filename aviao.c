@@ -5,6 +5,18 @@
 #include <ctype.h>
 #include <unistd.h>
 
+int cont1 = 0, cont2 = 0, cont3 = 0, cont4 = 0, totalPessoas = 0;
+int opcao, i, j, aviaoEscolhido, numDePassagens, consultaAviao, achou = 0;
+int avioes[4] = {0, 0, 0, 0}, assentos[4] = {0, 0, 0, 0};
+int pass1[100], pass2[100], pass3[100], pass4[100];
+int passagensPorPessoa[200];
+
+char cpfs1[50][11], cpfs2[50][11], cpfs3[50][11], cpfs4[50][11];
+char nome[50], cpf[20], consultaPassageiro[50], consultaCpf[12];
+char todosOsNomes[200][50], todosOsCpfs[200][20];
+char passageiros1[100][50], passageiros2[100][50];
+char passageiros3[100][50], passageiros4[100][50];
+
 void limparBuffer() {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
@@ -19,21 +31,82 @@ int haAvioesDisponiveis(int assentos[], int tamanho) {
     return 0;
 }
 
+int lerInt(const char* mensagem) {
+    int numero, valido = 0;
+
+    while (!valido) {
+        printf("%s", mensagem);
+        if (scanf("%d", &numero) == 1) { 
+            valido = 1;
+        } else {
+            printf("\nEntrada inválida! Digite apenas números inteiros.\n");
+            limparBuffer();
+        }
+    }
+
+    return numero;
+}
+
+int acharIndicePorCPF(char cpf[]) {
+    for (int i = 0; i < totalPessoas; i++) {
+        if (strcmp(todosOsCpfs[i], cpf) == 0) {
+            return i;
+        }
+    }
+    return -1;
+}
+
 void esperarEnter() {
+    limparBuffer();
     printf("\nPressione Enter para continuar...");
-    while (getchar() != '\n');
+    getchar();
+}
+
+void mostrarPassagensPorCPF(char cpf[]) {
+    int indice = acharIndicePorCPF(cpf);
+
+    if (indice == -1) {
+        printf("\nCPF não encontrado.\n");
+        return;
+    }
+
+    int encontrou = 0;
+    char* nome = todosOsNomes[indice];
+    
+    for (int i = 0; i < cont1; i++) {
+        if (strcmp(cpf, cpfs1[i]) == 0 && pass1[i] > 0) {
+            printf("- Avião 1 (#%04d): %d passagens\n", avioes[0], pass1[i]);
+            encontrou = 1;
+        }
+    }
+    for (int i = 0; i < cont2; i++) {
+        if (strcmp(cpf, cpfs2[i]) == 0 && pass2[i] > 0) {
+            printf("- Avião 2 (#%04d): %d passagens\n", avioes[1], pass2[i]);
+            encontrou = 1;
+        }
+    }
+    for (int i = 0; i < cont3; i++) {
+        if (strcmp(cpf, cpfs3[i]) == 0 && pass3[i] > 0) {
+            printf("- Avião 3 (#%04d): %d passagens\n", avioes[2], pass3[i]);
+            encontrou = 1;
+        }
+    }
+    for (int i = 0; i < cont4; i++) {
+        if (strcmp(cpf, cpfs4[i]) == 0 && pass4[i] > 0) {
+            printf("- Avião 4 (#%04d): %d passagens\n", avioes[3], pass4[i]);
+            encontrou = 1;
+        }
+    }
+
+    if (!encontrou) {
+        printf("(Nenhuma passagem encontrada.)\n");
+    }
 }
 
 int main (){
     setlocale(LC_ALL, "pt_PT.UTF-8"); 
-    int opcao, i, j, aviaoEscolhido, numDePassagens, consultaAviao;
-    int cont1 = 0, cont2 = 0, cont3 = 0, cont4 = 0, totalNomes = 0, achou = 0, mostrouCabecalho = 0;
-    int pass1[100], pass2[100], pass3[100], pass4[100], passagensPorPessoa[160];
-    int avioes[4] = {0, 0, 0, 0}, assentos[4] = {0, 0, 0, 0};
-    char nome[50], passageiros1[100][50], passageiros2[100][50], passageiros3[100][50], passageiros4[100][50];
-    char nomeParaConsulta[50], consultaPassageiro[50], todosOsNomes[160][50];
-
-    printf("\nBem vindo a Agência de Aviação Sweet Flight!");
+    
+    printf("\nBem vindo a Agência de Aviação Sweet Flight!\n");
     do{
         //Criar o menu
         printf("\n-------------------- MENU ------------------");
@@ -43,31 +116,21 @@ int main (){
         printf("\n4: Realizar consulta por avião.");
         printf("\n5: Realizar consulta por passageiro.");
         printf("\n6: Sair.\n");
-        printf("\nDigite qual opção deseja realizar: ");
-        if (scanf("%d", &opcao) != 1) {
-            printf("\nEntrada inválida! Apenas números são permitidos. Encerrando o programa.\n");
-            return 1;
-        }
-        limparBuffer();
-
+        opcao = lerInt("\nDigite qual opção deseja realizar: ");
 
         switch (opcao){
             case 1: {
-                //Mostrando os aviões disponíveis 
                 if (avioes[3] == 0){
                     printf ("\n");
-                    for(i = 0; i < 4; i++){
-                        printf ("Cadastre o %d° aviao (apenas números): ", i + 1);
-                        if (scanf("%d", &avioes[i]) != 1) {
-                            printf("\nEntrada inválida! Apenas números são permitidos. Encerrando o programa.\n");
-                            return 1;
-                        }
-                        limparBuffer();
-                    }    
+                    for (i = 0; i < 4; i++) {
+                       char mensagem[50];
+                       sprintf(mensagem, "Cadastre o %d° avião (apenas números): ", i + 1);
+                       avioes[i] = lerInt(mensagem);
+                    } 
                     printf("\nProcessando...\n");
                     sleep(2);
                     printf("\033[1A\033[2K");
-                    printf("\nConcluído!\n");
+                    printf("Concluído!\n");
                     esperarEnter();
                     system("clear");
 
@@ -95,27 +158,23 @@ int main (){
                             printf("Avião %d: #%04d: %d assentos.\n", i + 1, avioes[i], assentos[i]);
                         }
                     } else {
+                        printf ("\n");
                         for (i = 0; i < 4; i++) {
-                            int entradaValida = 0;
-                            while (!entradaValida) {
-                                printf("\nDigite quantos assentos terá o avião %d (Max 100): ", avioes[i]);
-                                if (scanf("%d", &assentos[i]) != 1) {
-                                    printf("\nEntrada inválida! Apenas números são permitidos.\n");
-                                    limparBuffer();
-                                    continue;
-                                }
-                                limparBuffer();
-                                if (assentos[i] > 100 || assentos[i] <= 0) {
-                                   printf("\nErro! O número deve ser entre 1 e 100!\n");
-                                   continue;
-                                }
-                                entradaValida = 1;
-                            }
+                           int assento = -1;
+                           while (assento < 1 || assento > 50) {
+                               char mensagem[100];
+                               sprintf(mensagem, "Quantos assentos terá o avião %d? (Max 50): ", avioes[i]);
+                               assento = lerInt(mensagem);
+                               if (assento < 1 || assento > 50) {
+                                   printf("\nErro! O número deve estar entre 1 e 50.\n");
+                               }
+                           }
+                           assentos[i] = assento;
                         }
                         printf("\nProcessando...\n");
                         sleep(2);
                         printf("\033[1A\033[2K");
-                        printf("\nConcluído!\n");
+                        printf("Concluído!\n");
                         esperarEnter();
                         system("clear");
                     }
@@ -139,88 +198,99 @@ int main (){
                     printf("\nNão há aviões com assentos disponíveis!\n");
                     break;
                 }
-
-                printf("\nEm qual avião deseja comprar a passagem? ");
-                if (scanf("%d", &aviaoEscolhido) != 1) {
-                    printf("\nEntrada inválida! Apenas números são permitidos. Encerrando o programa.\n");
-                    return 1;
-                }
-                limparBuffer();
+                
+                printf ("\n");
+                aviaoEscolhido = lerInt("Em qual avião deseja comprar a passagem? ");
                 
                 if (aviaoEscolhido >= 1 && aviaoEscolhido <= 4 && assentos[aviaoEscolhido - 1] != 0) {
                     int valido = 0;
 
                     while (!valido) {
-                        printf("\nDigite o seu nome (Apenas letras): ");
+                        printf("Digite o seu nome (Apenas letras): ");
                         scanf(" %49[^\n]", nome);
                         limparBuffer();
                         valido = 1;
                         for (int i = 0; i < strlen(nome); i++) {
                             if (!isalpha((unsigned char)(nome[i])) && nome[i] != ' ') {
                                 valido = 0;
-                                printf("Nome inválido! Use apenas letras (sem números ou símbolos).\n");
+                                printf("\nNome inválido! Use apenas letras (sem números ou símbolos).\n");
                                 break;
                             }
                         }
                     }
 
-                    printf("Nome aceito: %s\n", nome);
+                    int cpfValido = 0;
 
-                    int indicePessoa = -1;
-                    for (i = 0; i < totalNomes; i++) {
-                        if (strcasecmp(nome, todosOsNomes[i]) == 0) {
-                            indicePessoa = i;
-                            break;
+                    while (!cpfValido) {
+                        printf("Digite seu CPF (somente 11 números): ");
+                        scanf(" %19[^\n]", cpf);
+                        limparBuffer();
+
+                        if (strlen(cpf) != 11) {
+                            printf("\nErro! CPF deve conter exatamente 11 dígitos.\n");
+                            continue;
+                        }
+
+                        cpfValido = 1;
+                        for (i = 0; i < 11; i++) {
+                            if (!isdigit((unsigned char)cpf[i])) {
+                                printf("\nErro! Use apenas números (sem letras, traços ou pontos).\n");
+                                cpfValido = 0;
+                                break;
+                            }
                         }
                     }
 
-                    printf("\nQuantas passagens deseja comprar neste avião? (MAX 20 no total por pessoa): ");
-                    if (scanf("%d", &numDePassagens) != 1) {
-                        printf("\nEntrada inválida! Apenas números são permitidos. Encerrando o programa.\n");
-                        return 1;
-                    }
-                    limparBuffer();
+    
+                    numDePassagens = lerInt("Quantas passagens nesse avião? (MAX 20 por CPF): ");
 
                     if (numDePassagens < 1 || numDePassagens > 20) {
                         printf("\nErro! O número de passagens deve estar entre 1 e 20.\n");
                         break;
                     }
-
+                    int indicePessoa = acharIndicePorCPF(cpf);
+                    
                     if (indicePessoa != -1 && passagensPorPessoa[indicePessoa] + numDePassagens > 20) {
-                        printf("\nErro! Cada passageiro pode comprar no máximo 20 passagens no total.\n");
+                        printf("\nErro! Cada passageiro pode comprar no máximo 20 passagens no total.");
                         printf("\nVocê já comprou %d e tentou comprar mais %d.\n", passagensPorPessoa[indicePessoa], numDePassagens);
                         break;
                     }
 
                     if (numDePassagens <= assentos[aviaoEscolhido - 1]) {
                         if (indicePessoa == -1) {
-                            strcpy(todosOsNomes[totalNomes], nome);
-                            passagensPorPessoa[totalNomes] = 0;
-                            indicePessoa = totalNomes;
-                            totalNomes++;
+                            strcpy(todosOsCpfs[totalPessoas], cpf);
+                            strcpy(todosOsNomes[totalPessoas], nome);
+                            passagensPorPessoa[totalPessoas] = 0;
+                            
+                            indicePessoa = totalPessoas;
+                            totalPessoas++;
                         }
                         assentos[aviaoEscolhido - 1] -= numDePassagens;
                         passagensPorPessoa[indicePessoa] += numDePassagens;
 
                         if (aviaoEscolhido == 1) {
                             strcpy(passageiros1[cont1], nome);
+                            strcpy(cpfs1[cont1], cpf);
                             pass1[cont1] = numDePassagens;
                             cont1++;
                         } else if (aviaoEscolhido == 2) {
                             strcpy(passageiros2[cont2], nome);
+                            strcpy(cpfs2[cont2], cpf);
                             pass2[cont2] = numDePassagens;
                             cont2++;
                         } else if (aviaoEscolhido == 3) {
                             strcpy(passageiros3[cont3], nome);
+                            strcpy(cpfs3[cont3], cpf);
                             pass3[cont3] = numDePassagens;
                             cont3++;
                         } else if (aviaoEscolhido == 4) {
                             strcpy(passageiros4[cont4], nome);
+                            strcpy(cpfs4[cont4], cpf);
                             pass4[cont4] = numDePassagens;
                             cont4++;
                         }
 
-                        printf("\nPassagem comprada com sucesso!");
+                        printf("\nPassagem comprada com sucesso!\n");
                     } else {
                         printf("\nNão há assentos suficientes nesse avião.\n");
                     }
@@ -235,12 +305,7 @@ int main (){
                 }else if(cont1 == 0 && cont2 == 0 && cont3 == 0 && cont4== 0){
                     printf("\nAinda não há passagens compradas!");
                 }else {
-                    printf("\nDeseja consultar qual avião? ");
-                    if (scanf("%d", &consultaAviao) != 1) {
-                        printf("\nEntrada inválida! Apenas números são permitidos. Encerrando o programa.\n");
-                        return 1;
-                    }
-                    limparBuffer();
+                    consultaAviao = lerInt ("\nDeseja consultar qual avião? ");
 
                     if (consultaAviao > 0 && consultaAviao <= 4) {
                         if (consultaAviao == 1 && cont1 > 0) {
@@ -269,13 +334,22 @@ int main (){
             case 5: {
                 if (todosOsNomes[0][0] == '\0') {
                     printf("\nNenhum nome foi cadastrado ainda.\n");
-                }else{
+                    break;
+                }
+
+                printf("\n1 - Realizar consulta por nome.");
+                printf("\n2 - Realizar consulta por CPF.");
+                int opc = lerInt("\nDigite a opção que deseja realizar: ");
+
+                if (opc == 1) {
                     achou = 0;
                     int valido1 = 0;
+
                     while (!valido1) {
                         printf("\nDigite o nome do passageiro que deseja consultar: ");
                         scanf(" %49[^\n]", consultaPassageiro);
                         limparBuffer();
+
                         valido1 = 1;
                         for (int i = 0; i < strlen(consultaPassageiro); i++) {
                             if (!isalpha(consultaPassageiro[i]) && consultaPassageiro[i] != ' ') {
@@ -286,37 +360,55 @@ int main (){
                         }
                     }
 
-                    for (j = 0; j < totalNomes; j++) {
+                    for (int j = 0; j < totalPessoas; j++) {
                         if (strcasecmp(consultaPassageiro, todosOsNomes[j]) == 0) {
                             achou = 1;
-                            printf("\nPassagens de %s:\n", consultaPassageiro);
-
-                            printf("\nPassagens de %s:\n", consultaPassageiro);
-
-                            for (i = 0; i < cont1; i++) {
-                                if (strcasecmp(consultaPassageiro, passageiros1[i]) == 0)
-                                    printf("- Avião 1 (#%04d): %d passagens\n", avioes[0], pass1[i]);
-                            }
-                            for (i = 0; i < cont2; i++) {
-                                if (strcasecmp(consultaPassageiro, passageiros2[i]) == 0)
-                                    printf("- Avião 2 (#%04d): %d passagens\n", avioes[1], pass2[i]);
-                            }
-                            for (i = 0; i < cont3; i++) {
-                                if (strcasecmp(consultaPassageiro, passageiros3[i]) == 0)
-                                    printf("- Avião 3 (#%04d): %d passagens\n", avioes[2], pass3[i]);
-                            }
-                            for (i = 0; i < cont4; i++) {
-                                if (strcasecmp(consultaPassageiro, passageiros4[i]) == 0)
-                                    printf("- Avião 4 (#%04d): %d passagens\n", avioes[3], pass4[i]);
-                            }
+                            printf("\nPassagens de %s | CPF: %.3s.***.***-%c%c\n", todosOsNomes[j], todosOsCpfs[j],
+                            todosOsCpfs[j][9], todosOsCpfs[j][10]);
+                            mostrarPassagensPorCPF(todosOsCpfs[j]);
                         }
                     }
 
-                    if (!achou)
-                    printf("\nEsse passageiro não existe ou ainda não fez reservas!\n");
+                    if (!achou) 
+                        printf("\nEsse passageiro não existe ou ainda não fez reservas!\n");
+
+                } else if (opc == 2) {
+                    int valido = 0;
+                    while (!valido) {
+                        printf("\nDigite o CPF que deseja consultar (somente 11 números, sem pontos ou traços): ");
+                        scanf(" %19[^\n]", consultaCpf);
+                        limparBuffer();
+
+                        if (strlen(consultaCpf) != 11) {
+                            printf("Erro! CPF deve conter exatamente 11 dígitos.\n");
+                            continue;
+                        }
+
+                        valido = 1;
+                        for (int i = 0; i < 11; i++) {
+                            if (!isdigit((unsigned char)consultaCpf[i])) {
+                                printf("Erro! Use apenas números (sem letras, traços ou pontos).\n");
+                                valido = 0;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    for (int j = 0; j < totalPessoas; j++) {
+                        if (strcmp(consultaCpf, todosOsCpfs[j]) == 0) {
+                            achou = 1;
+                            printf("\nPassagens de %s | CPF: %.3s.***.***-%c%c\n", todosOsNomes[j], todosOsCpfs[j],
+                            todosOsCpfs[j][9], todosOsCpfs[j][10]);
+                        }
+                        break;
+                    }
+
+                } else {
+                    printf("Opção inválida!\n");
                 }
+
                 break;
-            }    
+            }
             case 6:
                 printf("\nEncerrando programa!");   
                 break; 
