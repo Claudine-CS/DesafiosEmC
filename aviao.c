@@ -3,7 +3,11 @@
 #include <string.h>
 #include <locale.h>
 #include <ctype.h>
-#include <unistd.h>
+#ifdef _WIN32
+    #include <windows.h>
+#else    
+    #include <unistd.h>
+#endif  
 
 int cont1 = 0, cont2 = 0, cont3 = 0, cont4 = 0, totalPessoas = 0;
 int opcao, i, j, aviaoEscolhido, numDePassagens, consultaAviao, achou = 0;
@@ -11,7 +15,7 @@ int avioes[4] = {0, 0, 0, 0}, assentos[4] = {0, 0, 0, 0};
 int pass1[100], pass2[100], pass3[100], pass4[100];
 int passagensPorPessoa[200];
 
-char cpfs1[50][11], cpfs2[50][11], cpfs3[50][11], cpfs4[50][11];
+char cpfs1[50][12], cpfs2[50][12], cpfs3[50][12], cpfs4[50][12];
 char nome[50], cpf[20], consultaPassageiro[50], consultaCpf[12];
 char todosOsNomes[200][50], todosOsCpfs[200][20];
 char passageiros1[100][50], passageiros2[100][50];
@@ -54,12 +58,6 @@ int acharIndicePorCPF(char cpf[]) {
         }
     }
     return -1;
-}
-
-void esperarEnter() {
-    limparBuffer();
-    printf("\nPressione Enter para continuar...");
-    getchar();
 }
 
 void mostrarPassagensPorCPF(char cpf[]) {
@@ -128,11 +126,23 @@ int main (){
                        avioes[i] = lerInt(mensagem);
                     } 
                     printf("\nProcessando...\n");
-                    sleep(2);
-                    printf("\033[1A\033[2K");
-                    printf("Concluído!\n");
-                    esperarEnter();
-                    system("clear");
+                    #ifdef _WIN32
+                        Sleep(2000);
+                        printf("Concluído!\n");
+                        system("pause");
+                        system("cls");
+                    #else
+                        sleep(2);
+                        printf("\033[1A\033[2K");
+                        printf("Concluído!\n");
+                        printf("\nPressione Enter para continuar...");
+                        getchar();
+                        getchar();
+                        system("clear");
+                    #endif
+                    
+                    
+                    
 
                 }else{
                     printf("\nAviões disponíveis: \n");
@@ -172,11 +182,20 @@ int main (){
                            assentos[i] = assento;
                         }
                         printf("\nProcessando...\n");
-                        sleep(2);
-                        printf("\033[1A\033[2K");
-                        printf("Concluído!\n");
-                        esperarEnter();
-                        system("clear");
+                        #ifdef _WIN32
+                            Sleep(2000);
+                            printf("Concluído!\n");
+                            system("pause");
+                            system("cls");
+                        #else
+                            sleep(2);
+                            printf("\033[1A\033[2K");
+                            printf("Concluído!\n");
+                            printf("\nPressione Enter para continuar...");
+                            getchar();
+                            getchar();
+                            system("clear");
+                        #endif
                     }
                 } else {
                     printf("\nAinda não há aviões cadastrados!\n");
@@ -241,9 +260,8 @@ int main (){
                         }
                     }
 
-    
-                    numDePassagens = lerInt("Quantas passagens nesse avião? (MAX 20 por CPF): ");
-
+                    numDePassagens = lerInt("Digite o número de passagens (max 20 por CPF): ");
+                    
                     if (numDePassagens < 1 || numDePassagens > 20) {
                         printf("\nErro! O número de passagens deve estar entre 1 e 20.\n");
                         break;
@@ -269,21 +287,37 @@ int main (){
                         passagensPorPessoa[indicePessoa] += numDePassagens;
 
                         if (aviaoEscolhido == 1) {
+                            if (cont1 >= 100) {
+                                printf("Limite de reservas atingido para este avião!\n");
+                                break;
+                            }
                             strcpy(passageiros1[cont1], nome);
                             strcpy(cpfs1[cont1], cpf);
                             pass1[cont1] = numDePassagens;
                             cont1++;
                         } else if (aviaoEscolhido == 2) {
+                            if (cont2 >= 100) {
+                                printf("Limite de reservas atingido para este avião!\n");
+                                break;
+                            }
                             strcpy(passageiros2[cont2], nome);
                             strcpy(cpfs2[cont2], cpf);
                             pass2[cont2] = numDePassagens;
                             cont2++;
                         } else if (aviaoEscolhido == 3) {
+                            if (cont3 >= 100) {
+                                printf("Limite de reservas atingido para este avião!\n");
+                                break;
+                            }
                             strcpy(passageiros3[cont3], nome);
                             strcpy(cpfs3[cont3], cpf);
                             pass3[cont3] = numDePassagens;
                             cont3++;
                         } else if (aviaoEscolhido == 4) {
+                            if (cont4 >= 100) {
+                                printf("Limite de reservas atingido para este avião!\n");
+                                break;
+                            }
                             strcpy(passageiros4[cont4], nome);
                             strcpy(cpfs4[cont4], cpf);
                             pass4[cont4] = numDePassagens;
@@ -338,7 +372,7 @@ int main (){
                 }
 
                 printf("\n1 - Realizar consulta por nome.");
-                printf("\n2 - Realizar consulta por CPF.");
+                printf("\n2 - Realizar consulta por CPF.\n");
                 int opc = lerInt("\nDigite a opção que deseja realizar: ");
 
                 if (opc == 1) {
@@ -346,7 +380,7 @@ int main (){
                     int valido1 = 0;
 
                     while (!valido1) {
-                        printf("\nDigite o nome do passageiro que deseja consultar: ");
+                        printf("\nDigite o nome do passagiro: ");
                         scanf(" %49[^\n]", consultaPassageiro);
                         limparBuffer();
 
@@ -375,7 +409,7 @@ int main (){
                 } else if (opc == 2) {
                     int valido = 0;
                     while (!valido) {
-                        printf("\nDigite o CPF que deseja consultar (somente 11 números, sem pontos ou traços): ");
+                        printf("\nDigite o CPF que deseja consultar (somente 11 números): ");
                         scanf(" %19[^\n]", consultaCpf);
                         limparBuffer();
 
@@ -399,8 +433,10 @@ int main (){
                             achou = 1;
                             printf("\nPassagens de %s | CPF: %.3s.***.***-%c%c\n", todosOsNomes[j], todosOsCpfs[j],
                             todosOsCpfs[j][9], todosOsCpfs[j][10]);
+                            mostrarPassagensPorCPF(todosOsCpfs[j]);
+                            break;
                         }
-                        break;
+                        
                     }
 
                 } else {
