@@ -120,8 +120,8 @@ int main (){
             case 1: {
                 if (avioes[3] == 0){
                     printf ("\n");
+                    char mensagem[50];
                     for (i = 0; i < 4; i++) {
-                       char mensagem[50];
                        sprintf(mensagem, "Cadastre o %d° avião (apenas números): ", i + 1);
                        avioes[i] = lerInt(mensagem);
                     } 
@@ -169,10 +169,10 @@ int main (){
                         }
                     } else {
                         printf ("\n");
+                        char mensagem[100];
                         for (i = 0; i < 4; i++) {
                            int assento = -1;
                            while (assento < 1 || assento > 50) {
-                               char mensagem[100];
                                sprintf(mensagem, "Quantos assentos terá o avião %d? (Max 50): ", avioes[i]);
                                assento = lerInt(mensagem);
                                if (assento < 1 || assento > 50) {
@@ -283,6 +283,14 @@ int main (){
                             indicePessoa = totalPessoas;
                             totalPessoas++;
                         }
+                        
+                        if (todosOsNomes[0][0] != '\0') {
+                            if (strcasecmp(todosOsNomes[indicePessoa], nome) != 0 && strcasecmp(todosOsCpfs[indicePessoa], cpf) == 0){
+                                printf("\nErro! Este CPF já foi registrado com outro nome.");
+                                break;
+                            }
+                        }
+                        
                         assentos[aviaoEscolhido - 1] -= numDePassagens;
                         passagensPorPessoa[indicePessoa] += numDePassagens;
 
