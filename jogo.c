@@ -19,14 +19,18 @@ void mostra_boneco(int erro) {
 	printf(" |\n");
 	printf("_|_\n\n");
 }
+void limparBuffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
 
 int main() {
 	setlocale(LC_ALL, "pt_PT");
-	int vida = 7, opcao, teraDicas;
+	int vida = 7, opcao, teraDicas, indice = 0;
 	int tamanho, v = 0;
-	char letra, lacuna[20] = {0};
+	char letra, tentativas[26], lacuna[20] = {0};
 	char *palavras[7] = {
-		"pterodáctilo",
+		"pterodactilo",
 		"jaguatirica",
 		"ornitorrinco",
 		"lontra",
@@ -96,21 +100,31 @@ int main() {
         			if (lacuna[i] == '\0') printf("_ ");
         			else printf("%c ", lacuna[i]);
         		}
-        
+                
+                if (indice > 0){
+                    printf ("\n\nLetras tentadas: ");
+                    for (int j = 0; j < indice; j++) {
+                        printf (" %c", tentativas[j], " ");
+                    }
+                }   
+                
         		printf("\n\nDigite a letra: ");
         		scanf(" %c", &letra);
-        
+                limparBuffer();
+                
         		int count = 0;
         		for (int i = 0; i < tamanho; i++) {
         			if (palavra_da_vez[i] == letra && lacuna[i] != letra) {
         				lacuna[i] = letra;
         				count++;
-        			}
+                    }    
         		}
         
         		if (count == 0) {
         			printf("Letra errada. Tente outra vez.\n");
         			vida--;
+                    tentativas[indice] = letra;
+                    indice++;
         		} else {
         			printf("Parabéns, acertou!\n");
         		}
@@ -118,11 +132,11 @@ int main() {
         		if (strcmp(palavra_da_vez, lacuna) == 0) {
         			v = 1;
         		}
-        
+                
         
         		printf("\nPressione ENTER para continuar...");
         		getchar();
-        		getchar();
+        		
         	}
         
         	if (v == 1) {
@@ -135,3 +149,4 @@ int main() {
     
     	return 0;
 }
+    
