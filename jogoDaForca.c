@@ -24,9 +24,25 @@ void limparBuffer() {
     while ((c = getchar()) != '\n' && c != EOF);
 }
 
+int lerInt(const char* mensagem) {
+    int numero, valido = 0;
+
+    while (!valido) {
+        printf("%s", mensagem);
+        if (scanf("%d", &numero) == 1) { 
+            valido = 1;
+        } else {
+            printf("\nEntrada inválida! Digite apenas números inteiros.\n");
+            limparBuffer();
+        }
+    }
+
+    return numero;
+}
+
 int main() {
 	setlocale(LC_ALL, "pt_PT");
-	int vida = 7, opcao, teraDicas, indice = 0;
+	int vida = 7, opcao, teraDicas, indice = 0, regras;
 	int tamanho, v = 0;
 	char letra, tentativas[26], lacuna[20] = {0};
 	char *palavras[7] = {
@@ -60,38 +76,52 @@ int main() {
     printf ("|  Bem vindo ao jogo da forca!  |\n");
     printf ("|-------------------------------|\n");
     printf ("|             MENU              |\n");
-    printf ("|1 - Jogar                      |\n");
-    printf ("|2 - Consultar regras do jogo   |\n");
+    printf ("|1 - Consultar regras do jogo   |\n");
+    printf ("|2 - Jogar                      |\n");
     printf ("|3 - Sair                       |\n");
     printf ("---------------------------------\n");
-    printf (" Digite uma opção: ");
-    scanf ("%d", &opcao);
+    opcao = lerInt(" Digite uma opção: ");
     
     switch (opcao){
         case 1: {
-            printf (" Deseja ter dica adcional? (1 - sim, 2 - não): ");
-        	scanf ("%d",  &teraDicas);
+            
+            printf ("---------------------------------\n"); 
+            printf ("|        Regras do Jogo:        |\n");
+            printf ("|-------------------------------|\n");
+            printf ("|1 - Nivel 1: Normal            |\n");
+            printf ("|2 - Nivel 2: Letra Bomba       |\n");
+            printf ("|3 - Voltar ao menu             |\n");
+            printf ("---------------------------------\n");
+            regras = lerInt(" Digite uma opção: ");
+                  
+        }
+        case 2: {
+        	teraDicas = lerInt(" Deseja ter dica especifica? (1 - sim, 2 - não): ");
+        	
         	if (teraDicas == 1) {
                 printf("\n A dica é: %s\n", dica_da_vez);
         		printf (" Boa sorte! \n");
         		printf("\n Pressione Enter para continuar...");
         		getchar();
         		getchar();
-        	}else {
+        	}else if (teraDicas == 2){
         	    printf (" Tudo bem. Boa sorte! \n");
         		printf("\n Pressione Enter para continuar...");
         		getchar();
         		getchar();
-        	}   
+        	}else {
+        	    printf ("\n Numero invalido!");
+        	    break;
+        	}
         	while (vida > 0 && v == 0) {
 
         		system("clear");
                 
-                if (teraDicas == 1){
+                if (teraDicas = 1){
         		    printf("Dica: %s\n", dica_da_vez);
-                }else;
+                }else if (teraDicas = 2){
                     printf ("Dica: é um animal.\n");
-        
+                }
         		mostra_boneco(7 - vida);
         
         		printf("Quantidade de letras: %d\n", tamanho);
@@ -104,7 +134,7 @@ int main() {
                 if (indice > 0){
                     printf ("\n\nLetras tentadas: ");
                     for (int j = 0; j < indice; j++) {
-                        printf (" %c", tentativas[j], " ");
+                        printf (" %c", tentativas[j]);
                     }
                 }   
                 
