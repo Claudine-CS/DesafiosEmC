@@ -120,9 +120,9 @@ int main (){
             case 1: {
                 if (avioes[3] == 0){
                     printf ("\n");
-                    char mensagem[50];
+                    char mensagem[100];
                     for (i = 0; i < 4; i++) {
-                       sprintf(mensagem, "Cadastre o %d° avião (apenas números): ", i + 1);
+                       snprintf(mensagem, sizeof(mensagem), "Cadastre o %d° avião (apenas números): ", i + 1);
                        avioes[i] = lerInt(mensagem);
                     } 
                     printf("\nProcessando...\n");
@@ -173,7 +173,7 @@ int main (){
                         for (i = 0; i < 4; i++) {
                            int assento = -1;
                            while (assento < 1 || assento > 50) {
-                               sprintf(mensagem, "Quantos assentos terá o avião %d? (Max 50): ", avioes[i]);
+                               snprintf(mensagem, sizeof(mensagem), "Quantos assentos terá o avião %d? (Max 50): ", avioes[i]);
                                assento = lerInt(mensagem);
                                if (assento < 1 || assento > 50) {
                                    printf("\nErro! O número deve estar entre 1 e 50.\n");
